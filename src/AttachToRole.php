@@ -24,7 +24,8 @@ class AttachToRole extends Action
      */
     public function handle(ActionFields $fields, Collection $models)
     {
-        $role = Role::getModel()->find($fields['role']);
+        $roleClass = Role::getModel();
+        $role = $roleClass::find($fields['role']);
         foreach ($models as $model) {
             $role->givePermissionTo($model);
         }
@@ -38,8 +39,9 @@ class AttachToRole extends Action
      */
     public function fields(NovaRequest $request)
     {
+        $roleClass = Role::getModel();
         return [
-            Select::make('Role')->options(Role::getModel()->get()->pluck('name',
+            Select::make('Role')->options($roleClass::query()->get()->pluck('name',
                 'id')->toArray())->displayUsingLabels(),
         ];
     }
